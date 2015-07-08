@@ -618,19 +618,21 @@
       return this.childRegex.exec(this.ancestryValue())[1];
     },
     // if TSS/ITS is selected as the assignee on the form, base the assignee off of the request type (custom_field_21875064)
-    calculatedRequester: function(){
-      // Brittany Dolan's user ID in Zendesk
-      // Mandy DiMarcangelo's user ID in Zendesk
+    calculatedRequester: function () {
       if (this.requestType() == 'termination')
-          return this.setting('HR_termination_requester');
-        else
-          return this.setting('HR_new_hire_requester');
-    },
-    requestType: function(){
-      if (this.ticket().customField("custom_field_21875064") === "hr_paperwork___terminate")
-        return "termination";
+        return this.setting('HR_termination_requester');
       else
+        return this.setting('HR_new_hire_requester');
+    },
+    requestType: function () {
+      var _reqType = this.ticket().customField("custom_field_21875064");
+      if (_reqType === "hr_paperwork___terminate") {
+        return "termination";
+      } else if (_reqType === "hr_paperwork___hire") {
         return "newHire";
+      } else {
+        return "transfer";
+      }
     }
   };
 }());

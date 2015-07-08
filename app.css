@@ -26,7 +26,7 @@ select {
   white-space: normal;
 }
 
-div.spinner
+.spinner
 {
   display: none;
   width:100px;
@@ -63,7 +63,7 @@ header {
 }*/
 
 /*make the div surrounding the send to TSS button smaller*/
-div.well {
+.well {
   padding: 5px;
   height: auto;
   border: none;

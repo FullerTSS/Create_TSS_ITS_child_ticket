@@ -1,7 +1,7 @@
 {
   "app": {
     "description": "Create and link a ticket from an existing one",
-    "name": "Linked Ticket",
+    "name": "",
     "parameters": {
       "ancestry_field": {
         "label": "Reference Field",
@@ -83,6 +83,6 @@
       }
     }
   },
-  "delimiter": "Original Description",
-  "create_ticket": "Create a ticket"
+  "delimiter": "FullerID:nDepartment:nComments:n",
+  "create_ticket": "Send to TSS"
 }

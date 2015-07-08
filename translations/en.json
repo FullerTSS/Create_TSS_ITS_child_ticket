@@ -6,7 +6,7 @@
     },
     "name": {
       "title": "This is the app name",
-      "value": "Linked Ticket"
+      "value": ""
     },
     "parameters": {
       "ancestry_field": {
@@ -17,6 +17,26 @@
         "helpText": {
           "title": "This is the helptext of the reference field so the user knows what to enter. this appears on the settings page of an app",
           "value": "Place a custom text field ID here to store the Linked Ticket reference data. Example : 2240041"
+        }
+      },
+      "HR_new_hire_requester": {
+        "label": {
+          "title": "Employee ID of rep who manages new hires goes here.",
+          "value": "Default requester for new hire child tickets."
+        },
+        "helpText": {
+          "title": "This is the help text for the HR_new_hire_requester field",
+          "value": "Enter the employee ID # of the HR rep who manages new hires. Example : 379018484"
+        }
+      },
+      "HR_termination_requester": {
+        "label": {
+          "title": "Employee ID of rep who manages terminations goes here.",
+          "value": "Default requester for termination child tickets."
+        },
+        "helpText": {
+          "title": "This is the help text for the HR_termination_requester field",
+          "value": "Enter the employee ID # of the HR rep who manages terminations. Example : 555100100"
         }
       },
       "child_tag": {
@@ -88,6 +108,10 @@
         "title": "This is a value from the requester dropdown, a bunch of options, one of them being making yourself as the requester",
         "value": "me"
       },
+      "HR_employee": {
+        "title": "This is a value from the requester dropdown, a bunch of options, one of them being making The appropriate HR employee as the assignee",
+        "value": "HR Employee"
+      },
       "ticket_requester": {
         "title": "This is a value from the requester dropdown, a bunch of options, one of them being making the original ticker requester the new requester too",
         "value": "ticket requester"
@@ -105,6 +129,10 @@
       "current_user": {
         "title": "This is a value from the requester dropdown, a bunch of options, one of them being making yourself as the assignee",
         "value": "me"
+      },
+      "TSS_ITS": {
+        "title": "This is a value from the requester dropdown, a bunch of options, one of them being making TSS/ITS as the assignee",
+        "value": "TSS/ITS - default"
       },
       "ticket_assignee": {
         "title": "This is a value from the requester dropdown, a bunch of options, one of them being making the current ticket assignee the new assignee",
@@ -143,7 +171,7 @@
     },
     "submit": {
       "title": "this is a big button to submit the ticket creation form",
-      "value": "Create Ticket"
+      "value": "Create TSS/ITS Ticket (and Solve HR Ticket)"
     },
     "loading": {
       "title": "wait text while ticket is being submitted",
@@ -224,14 +252,18 @@
   },
   "delimiter": {
     "title": "This is a placeholder text marking the different between the new text and the old one",
-    "value": "Original Description"
+    "value": "FullerID: \nDepartment: \nJob Title: \nExtension: \nStart Date: \nClone Access From: \nComments: \nChild ticket created by: "
+  },
+  "delimiterTermination": {
+    "title": "This is a placeholder text marking the different between the new text and the old one",
+    "value": "Name: \nFullerID: \nTermination Date (end of day): \nComments: \nChild ticket created by: "
   },
   "create_ticket": {
     "title": "empty",
-    "value": "Create a ticket"
+    "value": "Send New Hire/Termination Ticket to TSS/ITS"
   },
   "closed_warn": {
     "title": "A warning that the current ticket is closed and cannot reference the child",
-    "value": "This ticket is closed and cannot be linked."
+    "value": "This ticket is closed and cannot be modified. Only the child ticket will continue to contain a reference"
   }
 }

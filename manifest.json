@@ -1,9 +1,10 @@
 {
-  "name": "Linked Ticket",
+  "name": "Send to IT/TSS",
   "author": {
-    "name": "Zendesk",
-    "email": "support@zendesk.com"
+    "name": "Modified by Joshua S",
+    "email": "joshuasimon@fuller.edu"
   },
+
   "parameters": [
     {
       "name": "ancestry_field",
@@ -13,13 +14,24 @@
     {
       "name": "child_tag",
       "type": "text"
+    },
+    {
+      "name": "HR_new_hire_requester",
+      "type": "text",
+      "required": true,
+      "default": "379018484"
+    },
+    {
+      "name": "HR_termination_requester",
+      "type": "text",
+      "required": true,
+      "default": "555100100"
     }
   ],
+
   "defaultLocale": "en",
   "private": false,
-  "location": [
-    "ticket_sidebar"
-  ],
+  "location": ["ticket_sidebar", "new_ticket_sidebar"],
   "frameworkVersion": "1.0",
-  "version": "1.9.0"
+  "version": "1.7"
 }

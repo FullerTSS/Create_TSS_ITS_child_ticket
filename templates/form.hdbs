@@ -9,9 +9,9 @@
       <strong>* {{t "form.requester.label"}}</strong>
       <div class="control-group">
         <select name="requester_type" class="span12" required>
-          <option value="">-</option>
-          <option value="current_user">{{t "form.requester.current_user"}} - {{current_user.email}}</option>
-          <option value="ticket_requester">{{t "form.requester.ticket_requester"}} - {{ticket.requester.email}}</option>
+        <option value="HR_employee">{{t "form.requester.HR_employee"}} - {{HR_employee.email}}</option>
+        <option value="current_user">{{t "form.requester.current_user"}} - {{current_user.email}}</option>
+		  <option value="ticket_requester">{{t "form.requester.ticket_requester"}} - {{ticket.requester.email}}</option>
           <option value="custom">{{t "form.requester.custom"}}</option>
         </select>
       </div>
@@ -36,7 +36,7 @@
       <div class="control-group">
         <label>
           <select name="assignee_type" class="span12">
-            <option value="">-</option>
+            <option value="TSS_ITS">Tech Support/ITS - default</option>
             <option value="current_user">{{t "form.assignee.current_user"}} - {{current_user.email}}</option>
             <option value="ticket_assignee">{{t "form.assignee.ticket_assignee"}} - {{ticket.assignee.group.name}}/{{ticket.assignee.user.email}}</option>
             <option value="custom">{{t "form.assignee.custom"}}</option>
@@ -89,16 +89,19 @@
         </ul>
       </div>
 
+<!--
+
       <div class="control-group">
         <label>
           <strong>* {{t "form.subject.label"}}</strong>
           <input type="text" class="subject span12" required>
         </label>
       </div>
+ -->
 
       <div class="control-group">
         <label class="checkbox">
-          <input type="checkbox" class="copy_description">{{t "form.copy_description.label"}}
+          <input type="checkbox" class="copy_description" checked>{{t "form.copy_description.label"}}
         </label>
       </div>
 

@@ -1,7 +1,7 @@
 {
   "app": {
     "description": "Créer et lier un ticket à partir d’un ticket existant",
-    "name": "Linked Ticket",
+    "name": "",
     "parameters": {
       "ancestry_field": {
         "label": "Champ de référence",

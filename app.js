@@ -2,6 +2,7 @@
   return {
     childRegex: /child_of:(\d*)/,
     parentRegex: /(?:father_of|parent_of):(\d*)/, //father_of is here to ensure compatibility with older versions
+    formDescription: function(val){ return this.formGetOrSet('.description', val); },
 
     events: {
       // APP EVENTS
@@ -17,6 +18,8 @@
       'autocompleteRequester.fail'      : 'genericAjaxFailure',
       'fetchGroups.fail'                : 'genericAjaxFailure',
       'fetchUsersFromGroup.fail'        : 'genericAjaxFailure',
+        //my event
+      // 'fetchUser.fail'                  : 'genericAjaxFailure',
       // DOM EVENTS
       'click .new-linked-ticket'        : 'displayForm',
       'click .create-linked-ticket'     : 'create',
@@ -81,6 +84,13 @@
           type: 'GET'
         };
       },
+      fetchUser: function(user_id){
+        return {
+          url: '/api/v2/users/' + user_id + '.json',
+          type: 'GET',
+          dataType: 'json'
+        };
+      },
       paginatedRequest: function(request, page, args) {
         var requestArgs = this.requests[request];
         if (_.isFunction(requestArgs)) {
@@ -111,22 +121,16 @@
       }
     },
 
-    ticketIsClosed: function() {
-      return this.ticket().status() == "closed";
-    },
-
     displayHome: function(){
       this.switchTo('home', {
-        closed_warn: this.ticketIsClosed()
+        closed_warn: this.ticket().status() == "closed"
       });
     },
 
     displayForm: function(event){
-      if(this.ticketIsClosed()) {
-        return;
-      }
-
       event.preventDefault();
+// disable ticket submit button so that HR doesn't accidentally use it.
+      this.disableSave();
 
       this.paginateRequest('fetchGroups').then(function(data){
         this.fillGroupWithCollection(data.groups);
@@ -136,12 +140,20 @@
         current_user: {
           email: this.currentUser().email()
         },
-        closed_warn: this.ticketIsClosed(),
+        closed_warn: this.ticket().status() == "closed",
         tags: this.tags(),
-        ccs: this.ccs()
+        ccs: this.ccs(),
+        HR_employee: {
+
+          // this.paginateRequest('fetchUser', 555100100).then
+          // email: "Automagically Assigned"
+          // email: this.fetchUser(555100100).name().toString()
+          // email: this.ajax('fetchUser', '555100100')
+        }
       });
 
-      this.bindAutocompleteOnRequesterEmail();
+// set the initial ticket text to new hire placeholders and copy the original description
+      this.copyDescription();
     },
 
     create: function(event){
@@ -164,7 +176,7 @@
     // FORM RELATED
 
     formSubject: function(val){ return this.formGetOrSet('.subject', val); },
-    formDescription: function(val){ return this.formGetOrSet('.description', val); },
+    // formDescription: function(val){ return this.formGetOrSet('.description', val); },
     formGroup: function(val){return this.formGetOrSet('.group', val); },
     formAssignee: function(val){return this.formGetOrSet('.assignee', val); },
     formRequesterEmail: function(val){return this.formGetOrSet('.requester_email', val); },
@@ -316,10 +328,9 @@
 
       var parent_closed = false;
 
-      if(this.ticketIsClosed()) {
+      if(this.ticket().status() == "closed") {
         parent_closed = true;
       }
-
       this.switchTo('has_relation', { ticket: data.ticket,
                                       is_child: is_child,
                                       assignee: assignee,
@@ -338,21 +349,29 @@
 
       if(this.ticket().status() != "closed") {
         this.ticket().customField("custom_field_" + this.ancestryFieldId(),value);
-
+        // added ajax call to solve ticket
         this.ajax('updateTicket',
                   this.ticket().id(),
                   { "ticket": { "custom_fields": [
                     { "id": this.ancestryFieldId(), "value": value }
-                  ]}});
+                  ], "status": "solved"}});
       }
 
       this.ajax('fetchTicket', data.ticket.id);
-
       this.spinnerOff();
     },
 
     copyDescription: function(){
-      var descriptionDelimiter = helpers.fmt("\n--- %@ --- \n", this.I18n.t("delimiter"));
+
+      //Creating User Name variable to put at the end of the delimiter
+      var currentUserName = this.currentUser().name() + "\n";
+
+      // set the initial ticket text to new hire placeholders
+      var descriptionDelimiter = helpers.fmt("%@ \n------------------ \n", this.I18n.t("delimiter") + currentUserName);
+
+      if (this.requestType() == "termination")
+        descriptionDelimiter = helpers.fmt("%@ \n------------------ \n", this.I18n.t("delimiterTermination") + currentUserName);
+
       var description = this.formDescription()
         .split(descriptionDelimiter);
 
@@ -421,7 +440,7 @@
 
     childTicketAttributes: function(){
       var params = {
-        "subject": this.formSubject(),
+        "subject": "HR - " + this.ticket().subject(),
         "comment": { "body": this.formDescription() },
         "custom_fields": [
           { id: this.ancestryFieldId(), value: 'child_of:' + this.ticket().id() }
@@ -433,7 +452,6 @@
                this.serializeAssigneeAttributes(),
                this.serializeTagAttributes()
               );
-
       return { "ticket": params };
     },
 
@@ -454,10 +472,20 @@
     serializeAssigneeAttributes: function(){
       var type = this.formAssigneeType();
       var attributes = {};
+      var itsGroupID = 21052840;
+      var tssGroupID = 20977320;
 
       // Very nice looking if/elseif/if/if/elseif/if/if
       // see: http://i.imgur.com/XA7BG5N.jpg
-      if (type == 'current_user'){
+
+      // if TSS/ITS is selected as the assignee on the form, base the assignee off of the request type (custom_field_21875064)
+        if (type == 'TSS_ITS'){
+          if (this.requestType() == 'termination')
+            attributes.group_id = itsGroupID;
+          else
+            attributes.group_id = tssGroupID;
+        }
+        else if (type == 'current_user'){
         attributes.assignee_id = this.currentUser().id();
       } else if (type == 'ticket_assignee' &&
                  this.ticket().assignee()) {
@@ -487,7 +515,10 @@
       var type = this.formRequesterType();
       var attributes  = {};
 
-      if (type == 'current_user'){
+      if (type == 'HR_employee'){
+        attributes.requester_id = this.calculatedRequester();
+      }
+      else if (type == 'current_user'){
         attributes.requester_id = this.currentUser().id();
       } else if (type == 'ticket_requester' &&
                  this.ticket().requester().id()) {
@@ -583,6 +614,21 @@
         return;
 
       return this.childRegex.exec(this.ancestryValue())[1];
+    },
+    // if TSS/ITS is selected as the assignee on the form, base the assignee off of the request type (custom_field_21875064)
+    calculatedRequester: function(){
+      // Brittany Dolan's user ID in Zendesk
+      // Mandy DiMarcangelo's user ID in Zendesk
+      if (this.requestType() == 'termination')
+          return this.setting('HR_termination_requester');
+        else
+          return this.setting('HR_new_hire_requester');
+    },
+    requestType: function(){
+      if (this.ticket().customField("custom_field_21875064") === "hr_paperwork___terminate")
+        return "termination";
+      else
+        return "newHire";
     }
   };
 }());

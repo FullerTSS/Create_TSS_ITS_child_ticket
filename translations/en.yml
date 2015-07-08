@@ -1,5 +1,5 @@
 ---
-title: "Linked Ticket"
+title: ""
 packages:
   - default
   - app_linked_ticket_app
@@ -12,7 +12,7 @@ parts:
   - translation:
       key: "txt.apps.linked_ticket_app.app.name"
       title: "This is the app name"
-      value: "Linked Ticket"
+      value: ""
   - translation:
       key: "txt.apps.linked_ticket_app.app.parameters.ancestry_field.label"
       title: "This is the field that will contain the linked ticket data, like the ID etc..."
@@ -192,11 +192,11 @@ parts:
   - translation:
       key: "txt.apps.linked_ticket_app.delimiter"
       title: "This is a placeholder text marking the different between the new text and the old one"
-      value: "Original Description"
+      value: "FullerID:nDepartment:nComments:n"
   - translation:
       key: "txt.apps.linked_ticket_app.create_ticket"
       title: "empty"
-      value: "Create a ticket"
+      value: "Send New Hire/Termination Ticket to TSS/ITS"
   - translation:
       key: "txt.apps.linked_ticket_app.closed_warn"
       title: "A warning that the current ticket is closed and cannot reference the child"

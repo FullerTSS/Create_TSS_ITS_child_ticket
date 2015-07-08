@@ -359,6 +359,7 @@
 
       this.ajax('fetchTicket', data.ticket.id);
       this.spinnerOff();
+      this.enableSave();
     },
 
     copyDescription: function(){
